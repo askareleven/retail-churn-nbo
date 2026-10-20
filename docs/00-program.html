@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Программа обучения ML Engineer</title>
+<style>
+:root{--bg:#F8FAFC;--fg:#0F172A;--card:#fff;--bd:#CBD5E1;--ac:#2563EB;--ok:#16A34A;--mut:#64748B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F172A;--fg:#E2E8F0;--card:#1E293B;--bd:#334155;--mut:#94A3B8}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 Inter,system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:24px;margin:8px 0}
+.top{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;z-index:2}
+.bar{height:12px;background:var(--bd);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+.pct{font-size:13px;color:var(--mut);margin-top:4px}
+section{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;margin:12px 0}
+h2{font-size:17px;margin:0 0 2px}
+.w{font-size:12px;color:var(--mut);margin-bottom:6px}
+label{display:flex;gap:8px;padding:4px 0;cursor:pointer}
+input{accent-color:var(--ac);margin-top:4px}
+.done{color:var(--mut);text-decoration:line-through}
+button{background:none;border:1px solid var(--bd);color:var(--mut);border-radius:6px;padding:4px 10px;cursor:pointer}
+</style></head><body><main>
+<div class="top"><h1>Программа: путь к ML Engineer</h1>
+<div class="bar"><i id="b"></i></div><div class="pct" id="p"></div><div class="pct">Проект 1 — только 🟦 ML. 🟪 DL (нейросети) начинается с проекта 5, см. 06-projects-roadmap.</div></div>
+<div id="app"></div>
+<p><button onclick="reset()">Сбросить прогресс</button></p>
+</main>
+<script>
+var P=[
+["0. Окружение (неделя 1) [База]",["Python, Git, Docker установлены","Создан репозиторий и виртуальное окружение","Могу объяснить, что такое commit, branch, venv"]],
+["1. Python и pandas (недели 1–3) [База]",["numpy: массивы, срезы, векторные операции","pandas: groupby, merge, window-функции","Matplotlib/seaborn: 5 базовых графиков","Могу написать RFM-таблицу без подсказок"]],
+["2. Математика (недели 1–8, параллельно) [База]",["Алгебра: функции, графики, степени, логарифмы","Линейная алгебра: вектор, матрица, скалярное произведение","Вероятность: условная, Байес, распределения","Статистика: среднее, дисперсия, доверительный интервал","Производная и градиентный спуск — объясняю на пальцах"]],
+["3. Данные и ClickHouse (недели 2–3) [Данные]",["Docker-compose с ClickHouse","Загружены таблицы H&M","SQL: JOIN, оконные функции, CTE","Объясняю, зачем ORDER BY в MergeTree"]],
+["4. EDA и постановка задачи (неделя 4) [Данные]",["Определён churn и дата среза","Ноутбук EDA с выводами","Понимаю, что такое утечка данных"]],
+["5. Признаки (недели 5–6) [🟦 ML]",["RFM-признаки","Признаки по категориям","SQL-витрина features_churn","Проверка на утечки"]],
+["6. Классический ML (недели 6–9) [🟦 ML]",["Train/test split по времени","Logistic Regression baseline","Деревья и случайный лес","LightGBM + подбор параметров","Метрики: ROC-AUC, PR-AUC, precision@k","Кросс-валидация и переобучение — объясняю"]],
+["7. NBO и рекомендации (недели 10–11) [🟦 ML]",["Baseline «популярное»","Генерация кандидатов","Ранжирование моделью","Метрика MAP@12"]],
+["8. MLOps (недели 12–13) [⚙️ MLOps]",["MLflow: логирование запусков","Сохранение и загрузка модели","pytest: тесты на данные и функции","ruff + pre-commit"]],
+["9. API и Docker (недели 13–14) [⚙️ MLOps]",["FastAPI: /predict/churn","pydantic-схемы","Dockerfile и запуск одной командой"]],
+["10. Дашборд и CI (неделя 15) [⚙️ MLOps]",["Streamlit-дашборд","GitHub Actions: тесты и линтер"]],
+["11. Портфолио (неделя 16) [Портфолио]",["README со скриншотами и метриками","Короткое демо-видео","Пост о проекте","Проект добавлен в резюме и LinkedIn"]]
+];
+var S={};try{S=JSON.parse(localStorage.getItem("ml")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("ml",JSON.stringify(S))}catch(e){}}
+function render(){var h="",t=0,d=0;
+P.forEach(function(s,i){var c=0;
+var items=s[1].map(function(x,j){var k=i+"-"+j;t++;if(S[k]){d++;c++}
+return '<label><input type="checkbox" '+(S[k]?"checked":"")+' onchange="tg(\''+k+'\')"><span class="'+(S[k]?"done":"")+'">'+x+'</span></label>'}).join("");
+h+='<section><h2>'+s[0]+'</h2><div class="w">'+c+' / '+s[1].length+'</div>'+items+'</section>'});
+document.getElementById("app").innerHTML=h;
+var r=t?Math.round(d/t*100):0;
+document.getElementById("b").style.width=r+"%";
+document.getElementById("p").textContent=r+"% · выполнено "+d+" из "+t}
+function tg(k){S[k]=!S[k];save();render()}
+function reset(){if(confirm("Сбросить весь прогресс?")){S={};save();render()}}
+render();
+</script></body></html>
